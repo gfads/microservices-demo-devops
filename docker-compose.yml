@@ -35,6 +35,8 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     read_only: true
+    environment:
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   catalogue-db:
     image: weaveworksdemos/catalogue-db:0.3.0
     hostname: catalogue-db
@@ -55,7 +57,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
     environment:
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=true
   carts-db:
     image: mongo:3.4
     hostname: carts-db
@@ -81,7 +83,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
     environment:
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=true
   orders-db:
     image: mongo:3.4
     hostname: orders-db
@@ -107,7 +109,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
     environment:
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=true
   queue-master:
     image: weaveworksdemos/queue-master:0.3.1
     hostname: queue-master
@@ -142,6 +144,8 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     read_only: true
+    environment:
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   user:
     image: weaveworksdemos/user:0.4.4
     hostname: user
@@ -153,6 +157,7 @@ services:
     read_only: true
     environment:
       - MONGO_HOST=user-db:27017
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   user-db:
     image: weaveworksdemos/user-db:0.4.0
     hostname: user-db
@@ -166,10 +171,9 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
-  user-sim:
-    image: weaveworksdemos/load-test:0.1.1
-    cap_drop:
-      - all
-    read_only: true
-    hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h edge-router"
+  zipkin:
+    image: openzipkin/zipkin
+    expose:
+      - "9411"
+    ports:
+      - "9411:9411"
