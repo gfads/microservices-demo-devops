@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+for svc in carts orders payment shipping user; do
+  docker tag gfads/$svc:rbinder localhost:5000/gfads/$svc:rbinder
+  docker push localhost:5000/gfads/$svc:rbinder
+done
