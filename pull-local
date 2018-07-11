@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+IP=192.168.15.7
+
+for svc in carts orders payment shipping user; do
+  docker pull $IP:5000/gfads/$svc:rbinder
+  docker tag $IP:5000/gfads/$svc:rbinder gfads/$svc:rbinder
+done
